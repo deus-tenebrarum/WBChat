@@ -34,8 +34,15 @@
     {% endif %}
 
     <p>{{ news_item.content }}</p>
+    {% if request.user.is_authenticated and request.user.isModerator %}
+        <p>
+            <a href="{% url 'news_edit' news_item.pk %}" style="color: orange; margin-right: 10px;">Редактировать</a>
+            <a href="{% url 'news_delete' news_item.pk %}" style="color: red;">Удалить</a>
+        </p>
+    {% endif %}
 
     <p><a href="{% url 'news_list' %}">← Назад к новостям</a></p>
+
 </div>
 
 </body>

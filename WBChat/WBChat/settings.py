@@ -70,9 +70,9 @@ WSGI_APPLICATION = 'WBChat.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'WBChat_db',
+        'NAME': 'wbchat_db',
         'USER': 'postgres',
-        'PASSWORD': '1234',
+        'PASSWORD': '1qaz!QAZ',
         'HOST': 'localhost',
         'PORT': '5432',
     }
