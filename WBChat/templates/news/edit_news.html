@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <title>Редактировать новость</title>
+</head>
+<body>
+
+<h1>Редактировать новость</h1>
+
+<form method="post" enctype="multipart/form-data">
+    {% csrf_token %}
+
+    <p>
+        <label>Заголовок:</label><br>
+        <input type="text" name="title" value="{{ news_item.title }}" required>
+    </p>
+
+    <p>
+        <label>Текст:</label><br>
+        <textarea name="content" rows="10" required>{{ news_item.content }}</textarea>
+    </p>
+
+    {% if news_item.image %}
+        <p>
+            <img src="{{ news_item.image.url }}" alt="" width="200"><br>
+            Текущее изображение
+        </p>
+    {% endif %}
+
+    <p>
+        <label>Новое изображение:</label><br>
+        <input type="file" name="image">
+    </p>
+
+    <button type="submit">Сохранить</button>
+</form>
+
+<p><a href="{% url 'news_detail' news_item.pk %}">← Назад</a></p>
+
+</body>
+</html>

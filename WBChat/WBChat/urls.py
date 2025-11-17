@@ -3,7 +3,7 @@ from django.urls import path
 from django.conf.urls.static import static
 from django.conf import settings
 from accounts.views import register, login_view, profile_view, logout_view
-from news.views import news_detail, news_list
+from news.views import news_detail, news_list, edit_news, delete_news, create_news
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -13,6 +13,9 @@ urlpatterns = [
     path('logout/', logout_view, name='logout'),
     path('news/', news_list, name='news_list'),
     path('news/<int:pk>/', news_detail, name='news_detail'),
+    path('news/<int:pk>/edit/', edit_news, name='news_edit'),
+    path('news/<int:pk>/delete/', delete_news, name='news_delete'),
+    path('news/create/', create_news, name='create_news'),
 ]
 
 urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

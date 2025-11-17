@@ -38,6 +38,16 @@
 <div class="nav-buttons">
         <a href="/news/">Новости</a>
         <a href="/profile/">Профиль</a>
+        {% if request.user.is_authenticated and request.user.isModerator %}
+        <p>
+            <a href="{% url 'create_news' %}"
+               style="background:#4caf50; color:white; padding:8px 14px;
+                      border-radius:6px; text-decoration:none;">
+                Добавить новость
+            </a>
+        </p>
+{% endif %}
+
     </div>
 <h1>Новости</h1>
 

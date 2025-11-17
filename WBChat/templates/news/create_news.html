@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <title>Создать новость</title>
+</head>
+<body>
+
+<h1>Создать новость</h1>
+
+<form method="post" enctype="multipart/form-data">
+    {% csrf_token %}
+
+    <p>
+        <label>Заголовок:</label><br>
+        <input type="text" name="title" required>
+    </p>
+
+    <p>
+        <label>Текст:</label><br>
+        <textarea name="content" rows="10" required></textarea>
+    </p>
+
+    <p>
+        <label>Изображение (необязательно):</label><br>
+        <input type="file" name="image">
+    </p>
+
+    <button type="submit">Создать</button>
+</form>
+
+<p><a href="{% url 'news_list' %}">← Назад к новостям</a></p>
+
+</body>
+</html>

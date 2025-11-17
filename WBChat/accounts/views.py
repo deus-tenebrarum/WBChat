@@ -29,10 +29,10 @@ def login_view(request):
             messages.error(request, "Неверный логин или пароль")
 
     return render(request, 'accounts/login.html')
-@login_required
+@login_required(login_url='login')
 def profile_view(request):
     return render(request, 'accounts/profile.html', {'user': request.user})
-@login_required
+@login_required(login_url='login')
 def logout_view(request):
     logout(request)
     return redirect('login')
