@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <title>{{ news_item.title }}</title>
+    <style>
+        body { font-family: Arial, sans-serif; padding: 20px; background: #fafafa; }
+        .container {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            border: 1px solid #ddd;
+        }
+        img { max-width: 400px; margin-top: 10px; border-radius: 5px; }
+        a { color: #0066cc; text-decoration: none; }
+        a:hover { text-decoration: underline; }
+        small { color: gray; }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h1>{{ news_item.title }}</h1>
+
+    <small>
+        {{ news_item.created_at|date:"d.m.Y H:i" }}
+        {% if news_item.author %}
+            | Автор: {{ news_item.author }}
+        {% endif %}
+    </small>
+
+    {% if news_item.image %}
+        <img src="{{ news_item.image.url }}" alt="{{ news_item.title }}">
+    {% endif %}
+
+    <p>{{ news_item.content }}</p>
+
+    <p><a href="{% url 'news_list' %}">← Назад к новостям</a></p>
+</div>
+
+</body>
+</html>

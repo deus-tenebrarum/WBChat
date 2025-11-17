@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <title>Новости</title>
+    <style>
+        body { font-family: Arial, sans-serif; padding: 20px; background: #fafafa; }
+        .card {
+            background: white;
+            padding: 15px;
+            margin-bottom: 15px;
+            border-radius: 8px;
+            border: 1px solid #ddd;
+        }
+        .card h2 { margin: 0; }
+        .card small { color: gray; }
+        .card img { max-width: 200px; display: block; margin-top: 10px; }
+        a { text-decoration: none; color: #0066cc; }
+        a:hover { text-decoration: underline; }
+        .nav-buttons {
+            margin-bottom: 20px;
+        }
+        .nav-buttons a {
+            display: inline-block;
+            padding: 10px 20px;
+            margin-right: 10px;
+            background-color: #4CAF50;
+            color: white;
+            text-decoration: none;
+            border-radius: 5px;
+        }
+        .nav-buttons a:hover {
+            background-color: #45a049;
+        }
+    </style>
+</head>
+<body>
+<div class="nav-buttons">
+        <a href="/news/">Новости</a>
+        <a href="/profile/">Профиль</a>
+    </div>
+<h1>Новости</h1>
+
+{% for item in news %}
+<div class="card">
+    <h2><a href="{% url 'news_detail' item.pk %}">{{ item.title }}</a></h2>
+    <small>{{ item.created_at|date:"d.m.Y H:i" }}</small>
+
+    {% if item.image %}
+        <img src="{{ item.image.url }}" alt="{{ item.title }}">
+    {% endif %}
+
+    <p>{{ item.content|truncatechars:150 }}</p>
+</div>
+{% empty %}
+<p>Пока новостей нет.</p>
+{% endfor %}
+
+</body>
+</html>
