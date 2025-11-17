@@ -2,28 +2,295 @@
 <html lang="ru">
 <head>
     <meta charset="UTF-8">
-    <title>Вход</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Вход - WBChat</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --magenta: #CB11AB;
+            --purplish: #990099;
+            --dark-violet: #481173;
+            --wb-pink: #B42371;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            background: linear-gradient(135deg, var(--dark-violet) 0%, var(--purplish) 50%, var(--magenta) 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .login-container {
+            background: white;
+            border-radius: 24px;
+            padding: 48px;
+            width: 100%;
+            max-width: 440px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            animation: slideIn 0.5s ease-out;
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+            margin-bottom: 32px;
+        }
+
+        .logo svg {
+            width: 48px;
+            height: 48px;
+            fill: var(--magenta);
+        }
+
+        .logo h1 {
+            font-size: 32px;
+            font-weight: 700;
+            background: linear-gradient(135deg, var(--magenta) 0%, var(--purplish) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .welcome-text {
+            text-align: center;
+            margin-bottom: 32px;
+        }
+
+        .welcome-text h2 {
+            font-size: 24px;
+            color: #1D1D1F;
+            margin-bottom: 8px;
+        }
+
+        .welcome-text p {
+            color: #6E6E73;
+            font-size: 16px;
+        }
+
+        .alert {
+            background: #FFE5E5;
+            color: #C41E3A;
+            padding: 14px 18px;
+            border-radius: 12px;
+            margin-bottom: 24px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            border: 1px solid #FFB3B3;
+            animation: shake 0.5s;
+        }
+
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-5px); }
+            75% { transform: translateX(5px); }
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #1D1D1F;
+            font-size: 14px;
+        }
+
+        .input-wrapper {
+            position: relative;
+        }
+
+        .input-icon {
+            position: absolute;
+            left: 16px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #6E6E73;
+            pointer-events: none;
+        }
+
+        .form-control {
+            width: 100%;
+            padding: 14px 16px 14px 48px;
+            border: 2px solid #D2D2D7;
+            border-radius: 12px;
+            font-size: 16px;
+            transition: all 0.3s ease;
+            font-family: inherit;
+        }
+
+        .form-control:focus {
+            outline: none;
+            border-color: var(--magenta);
+            box-shadow: 0 0 0 4px rgba(203, 17, 171, 0.1);
+        }
+
+        .btn-login {
+            width: 100%;
+            padding: 16px;
+            background: linear-gradient(135deg, var(--magenta) 0%, var(--purplish) 100%);
+            color: white;
+            border: none;
+            border-radius: 12px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-top: 8px;
+        }
+
+        .btn-login:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 24px rgba(203, 17, 171, 0.4);
+        }
+
+        .btn-login:active {
+            transform: translateY(0);
+        }
+
+        .divider {
+            text-align: center;
+            margin: 24px 0;
+            position: relative;
+        }
+
+        .divider::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 50%;
+            width: 100%;
+            height: 1px;
+            background: #D2D2D7;
+        }
+
+        .divider span {
+            background: white;
+            padding: 0 16px;
+            color: #6E6E73;
+            font-size: 14px;
+            position: relative;
+            z-index: 1;
+        }
+
+        .register-link {
+            text-align: center;
+            color: #6E6E73;
+            font-size: 14px;
+        }
+
+        .register-link a {
+            color: var(--magenta);
+            text-decoration: none;
+            font-weight: 600;
+            transition: color 0.3s ease;
+        }
+
+        .register-link a:hover {
+            color: var(--purplish);
+            text-decoration: underline;
+        }
+
+        @media (max-width: 500px) {
+            .login-container {
+                padding: 32px 24px;
+            }
+
+            .logo h1 {
+                font-size: 28px;
+            }
+
+            .welcome-text h2 {
+                font-size: 20px;
+            }
+        }
+    </style>
 </head>
 <body>
-    <h2>Вход</h2>
+    <div class="login-container">
+        <div class="logo">
+            <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" fill="currentColor"/>
+            </svg>
+            <h1>WBChat</h1>
+        </div>
 
-    {% if messages %}
-        {% for message in messages %}
-            <p style="color: red">{{ message }}</p>
-        {% endfor %}
-    {% endif %}
+        <div class="welcome-text">
+            <h2>С возвращением!</h2>
+            <p>Войдите в корпоративный мессенджер</p>
+        </div>
 
-    <form method="POST">
-        {% csrf_token %}
-        <label>Логин:</label><br>
-        <input type="text" name="username" required><br><br>
+        {% if messages %}
+            {% for message in messages %}
+                <div class="alert">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <circle cx="12" cy="12" r="10"/>
+                        <line x1="12" y1="8" x2="12" y2="12"/>
+                        <line x1="12" y1="16" x2="12.01" y2="16"/>
+                    </svg>
+                    {{ message }}
+                </div>
+            {% endfor %}
+        {% endif %}
 
-        <label>Пароль:</label><br>
-        <input type="password" name="password" required><br><br>
+        <form method="POST">
+            {% csrf_token %}
+            
+            <div class="form-group">
+                <label class="form-label">Имя пользователя</label>
+                <div class="input-wrapper">
+                    <svg class="input-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/>
+                        <circle cx="12" cy="7" r="4"/>
+                    </svg>
+                    <input type="text" name="username" class="form-control" placeholder="Введите имя пользователя" required autofocus>
+                </div>
+            </div>
 
-        <button type="submit">Войти</button>
-    </form>
+            <div class="form-group">
+                <label class="form-label">Пароль</label>
+                <div class="input-wrapper">
+                    <svg class="input-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <rect x="3" y="11" width="18" height="11" rx="2" ry="2"/>
+                        <path d="M7 11V7a5 5 0 0 1 10 0v4"/>
+                    </svg>
+                    <input type="password" name="password" class="form-control" placeholder="Введите пароль" required>
+                </div>
+            </div>
 
-    <p>Нет аккаунта? <a href="/register/">Регистрация</a></p>
+            <button type="submit" class="btn-login">Войти</button>
+        </form>
+
+        <div class="divider">
+            <span>или</span>
+        </div>
+
+        <div class="register-link">
+            Нет аккаунта? <a href="/register/">Зарегистрироваться</a>
+        </div>
+    </div>
 </body>
 </html>
