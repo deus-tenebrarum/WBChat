@@ -1,35 +1,246 @@
-<!DOCTYPE html>
-<html lang="ru">
-<head>
-    <meta charset="UTF-8">
-    <title>Создать новость</title>
-</head>
-<body>
+<!-- create_news.html -->
+{% extends 'base.html' %}
 
-<h1>Создать новость</h1>
+{% block title %}Создать новость - WBChat{% endblock %}
 
-<form method="post" enctype="multipart/form-data">
-    {% csrf_token %}
+{% block extra_styles %}
+<style>
+    .back-link {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        color: var(--text-secondary);
+        text-decoration: none;
+        font-size: 14px;
+        margin-bottom: 24px;
+        transition: all 0.3s ease;
+    }
 
-    <p>
-        <label>Заголовок:</label><br>
-        <input type="text" name="title" required>
-    </p>
+    .back-link:hover {
+        color: var(--magenta);
+        gap: 10px;
+    }
 
-    <p>
-        <label>Текст:</label><br>
-        <textarea name="content" rows="10" required></textarea>
-    </p>
+    .back-link svg {
+        width: 16px;
+        height: 16px;
+    }
 
-    <p>
-        <label>Изображение (необязательно):</label><br>
-        <input type="file" name="image">
-    </p>
+    .form-container {
+        max-width: 800px;
+        margin: 0 auto;
+    }
 
-    <button type="submit">Создать</button>
-</form>
+    .page-title {
+        font-size: 32px;
+        font-weight: 700;
+        margin-bottom: 32px;
+        color: var(--text-primary);
+    }
 
-<p><a href="{% url 'news_list' %}">← Назад к новостям</a></p>
+    .image-preview-wrapper {
+        margin-top: 16px;
+        display: none;
+    }
 
-</body>
-</html>
+    .image-preview {
+        width: 100%;
+        max-width: 400px;
+        border-radius: 12px;
+        box-shadow: var(--shadow);
+    }
+
+    .file-upload-zone {
+        border: 2px dashed var(--border-color);
+        border-radius: 12px;
+        padding: 40px 20px;
+        text-align: center;
+        transition: all 0.3s ease;
+        cursor: pointer;
+        background: var(--bg-light);
+    }
+
+    .file-upload-zone:hover {
+        border-color: var(--magenta);
+        background: rgba(203, 17, 171, 0.05);
+    }
+
+    .file-upload-zone.dragover {
+        border-color: var(--magenta);
+        background: rgba(203, 17, 171, 0.1);
+    }
+
+    .file-upload-icon {
+        width: 48px;
+        height: 48px;
+        margin: 0 auto 16px;
+        color: var(--text-secondary);
+    }
+
+    .file-upload-text {
+        font-size: 16px;
+        color: var(--text-primary);
+        font-weight: 600;
+        margin-bottom: 8px;
+    }
+
+    .file-upload-hint {
+        font-size: 14px;
+        color: var(--text-secondary);
+    }
+
+    input[type="file"] {
+        display: none;
+    }
+
+    .form-actions {
+        display: flex;
+        gap: 12px;
+        margin-top: 32px;
+        flex-wrap: wrap;
+    }
+
+    @media (max-width: 768px) {
+        .page-title {
+            font-size: 24px;
+        }
+
+        .form-actions {
+            flex-direction: column;
+        }
+
+        .form-actions .btn {
+            width: 100%;
+            justify-content: center;
+        }
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<a href="{% url 'news_list' %}" class="back-link">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <line x1="19" y1="12" x2="5" y2="12"/>
+        <polyline points="12 19 5 12 12 5"/>
+    </svg>
+    Назад к новостям
+</a>
+
+<div class="form-container">
+    <div class="card">
+        <h1 class="page-title">Создать новость</h1>
+
+        <form method="post" enctype="multipart/form-data" id="newsForm">
+            {% csrf_token %}
+
+            <div class="form-group">
+                <label class="form-label">
+                    Заголовок
+                    <span style="color: var(--magenta);">*</span>
+                </label>
+                <input type="text" 
+                       name="title" 
+                       class="form-control" 
+                       placeholder="Введите заголовок новости"
+                       required
+                       autofocus>
+            </div>
+
+            <div class="form-group">
+                <label class="form-label">
+                    Содержание
+                    <span style="color: var(--magenta);">*</span>
+                </label>
+                <textarea name="content" 
+                          class="form-control" 
+                          rows="12"
+                          placeholder="Введите текст новости"
+                          required></textarea>
+            </div>
+
+            <div class="form-group">
+                <label class="form-label">Изображение (необязательно)</label>
+                <label for="imageInput" class="file-upload-zone" id="dropZone">
+                    <svg class="file-upload-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <rect x="3" y="3" width="18" height="18" rx="2" ry="2"/>
+                        <circle cx="8.5" cy="8.5" r="1.5"/>
+                        <polyline points="21 15 16 10 5 21"/>
+                    </svg>
+                    <div class="file-upload-text">Нажмите или перетащите изображение</div>
+                    <div class="file-upload-hint">PNG, JPG, GIF до 10MB</div>
+                </label>
+                <input type="file" 
+                       name="image" 
+                       id="imageInput" 
+                       accept="image/*">
+                <div class="image-preview-wrapper" id="previewWrapper">
+                    <img id="imagePreview" class="image-preview">
+                </div>
+            </div>
+
+            <div class="form-actions">
+                <button type="submit" class="btn btn-primary">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <polyline points="20 6 9 17 4 12"/>
+                    </svg>
+                    Опубликовать
+                </button>
+                <a href="{% url 'news_list' %}" class="btn btn-secondary">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <line x1="18" y1="6" x2="6" y2="18"/>
+                        <line x1="6" y1="6" x2="18" y2="18"/>
+                    </svg>
+                    Отмена
+                </a>
+            </div>
+        </form>
+    </div>
+</div>
+
+<script>
+    const imageInput = document.getElementById('imageInput');
+    const imagePreview = document.getElementById('imagePreview');
+    const previewWrapper = document.getElementById('previewWrapper');
+    const dropZone = document.getElementById('dropZone');
+
+    // Image preview
+    imageInput.addEventListener('change', function(e) {
+        const file = e.target.files[0];
+        if (file) {
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                imagePreview.src = e.target.result;
+                previewWrapper.style.display = 'block';
+            };
+            reader.readAsDataURL(file);
+        }
+    });
+
+    // Drag and drop
+    dropZone.addEventListener('dragover', (e) => {
+        e.preventDefault();
+        dropZone.classList.add('dragover');
+    });
+
+    dropZone.addEventListener('dragleave', () => {
+        dropZone.classList.remove('dragover');
+    });
+
+    dropZone.addEventListener('drop', (e) => {
+        e.preventDefault();
+        dropZone.classList.remove('dragover');
+        
+        const files = e.dataTransfer.files;
+        if (files.length > 0) {
+            imageInput.files = files;
+            imageInput.dispatchEvent(new Event('change'));
+        }
+    });
+</script>
+{% endblock %}
+
+<!-- For edit_news.html, use the same template but change: -->
+<!-- 1. Title to "Редактировать новость" -->
+<!-- 2. Pre-fill form values with {{ news_item.title }}, {{ news_item.content }} -->
+<!-- 3. Show current image if exists -->
+<!-- 4. Change button text to "Сохранить изменения" -->
