@@ -72,7 +72,7 @@ DATABASES = {
         'ENGINE': 'django.db.backends.postgresql',
         'NAME': 'wbchat_db',
         'USER': 'postgres',
-        'PASSWORD': '1qaz!QAZ',
+        'PASSWORD': '1234',
         'HOST': 'localhost',
         'PORT': '5432',
     }
