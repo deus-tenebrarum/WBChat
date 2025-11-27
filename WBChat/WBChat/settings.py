@@ -26,13 +26,21 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    # Third-party apps
+    'channels',
+    'rest_framework',
+    'rest_framework.authtoken',
+    'corsheaders',
+    # Local apps
     'accounts',
     'news',
+    'chat',
 ]
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
+    'corsheaders.middleware.CorsMiddleware',  # Must be before CommonMiddleware
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
@@ -62,6 +70,7 @@ TEMPLATES = [
 
 
 WSGI_APPLICATION = 'WBChat.wsgi.application'
+ASGI_APPLICATION = 'WBChat.asgi.application'
 
 
 # Database
@@ -72,7 +81,7 @@ DATABASES = {
         'ENGINE': 'django.db.backends.postgresql',
         'NAME': 'wbchat_db',
         'USER': 'postgres',
-        'PASSWORD': '1234',
+        'PASSWORD': '',  # Using trust authentication
         'HOST': 'localhost',
         'PORT': '5432',
     }
@@ -128,3 +137,110 @@ STATIC_URL = 'static/'
 # https://docs.djangoproject.com/en/5.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+# ==============================================================================
+# CHANNELS & REDIS CONFIGURATION
+# ==============================================================================
+
+# Channel Layers for WebSocket support
+# Using in-memory backend for development (will switch to Redis in production)
+CHANNEL_LAYERS = {
+    'default': {
+        'BACKEND': 'channels.layers.InMemoryChannelLayer',
+    }
+}
+
+# To use Redis (uncomment when Redis is running):
+# CHANNEL_LAYERS = {
+#     'default': {
+#         'BACKEND': 'channels_redis.core.RedisChannelLayer',
+#         'CONFIG': {
+#             "hosts": [('127.0.0.1', 6379)],
+#         },
+#     },
+# }
+
+# Redis configuration for Celery
+REDIS_HOST = 'localhost'
+REDIS_PORT = 6379
+REDIS_DB = 0
+
+# Celery Configuration
+CELERY_BROKER_URL = f'redis://{REDIS_HOST}:{REDIS_PORT}/{REDIS_DB}'
+CELERY_RESULT_BACKEND = f'redis://{REDIS_HOST}:{REDIS_PORT}/{REDIS_DB}'
+CELERY_ACCEPT_CONTENT = ['json']
+CELERY_TASK_SERIALIZER = 'json'
+CELERY_RESULT_SERIALIZER = 'json'
+CELERY_TIMEZONE = TIME_ZONE
+
+# ==============================================================================
+# REST FRAMEWORK CONFIGURATION
+# ==============================================================================
+
+REST_FRAMEWORK = {
+    'DEFAULT_AUTHENTICATION_CLASSES': [
+        'rest_framework.authentication.SessionAuthentication',
+        'rest_framework.authentication.TokenAuthentication',
+        'rest_framework_simplejwt.authentication.JWTAuthentication',
+    ],
+    'DEFAULT_PERMISSION_CLASSES': [
+        'rest_framework.permissions.IsAuthenticated',
+    ],
+    'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.PageNumberPagination',
+    'PAGE_SIZE': 50,
+    'DEFAULT_FILTER_BACKENDS': [
+        'rest_framework.filters.SearchFilter',
+        'rest_framework.filters.OrderingFilter',
+    ],
+    'DATETIME_FORMAT': '%Y-%m-%d %H:%M:%S',
+}
+
+# JWT Settings
+from datetime import timedelta
+
+SIMPLE_JWT = {
+    'ACCESS_TOKEN_LIFETIME': timedelta(hours=1),
+    'REFRESH_TOKEN_LIFETIME': timedelta(days=7),
+    'ROTATE_REFRESH_TOKENS': True,
+    'BLACKLIST_AFTER_ROTATION': True,
+    'UPDATE_LAST_LOGIN': True,
+    'ALGORITHM': 'HS256',
+    'SIGNING_KEY': SECRET_KEY,
+    'AUTH_HEADER_TYPES': ('Bearer',),
+}
+
+# ==============================================================================
+# CORS CONFIGURATION
+# ==============================================================================
+
+# CORS settings for frontend development
+CORS_ALLOW_ALL_ORIGINS = True  # Set to False in production
+CORS_ALLOW_CREDENTIALS = True
+
+# In production, use specific origins:
+# CORS_ALLOWED_ORIGINS = [
+#     "http://localhost:3000",  # React dev server
+#     "http://localhost:5173",  # Vite dev server
+#     "https://your-production-domain.com",
+# ]
+
+CORS_ALLOW_HEADERS = [
+    'accept',
+    'accept-encoding',
+    'authorization',
+    'content-type',
+    'dnt',
+    'origin',
+    'user-agent',
+    'x-csrftoken',
+    'x-requested-with',
+]
+
+# ==============================================================================
+# WEBSOCKET CONFIGURATION
+# ==============================================================================
+
+# WebSocket configuration
+WEBSOCKET_URL = 'ws://localhost:8000/ws/'
+WEBSOCKET_HEARTBEAT_INTERVAL = 30  # seconds
+WEBSOCKET_DISCONNECT_TIMEOUT = 60  # seconds
